@@ -8,6 +8,8 @@ struct studente
 	int voto;
 };
 
+studente classe[100]; //globale
+
 int controlloN(int x)
 {
 	int r;
@@ -17,14 +19,12 @@ int controlloN(int x)
 	}
 	else
 	{
-		system("cls");
+		system("clear");//system("cls");
 		cout <<"Numero non valido" <<endl;
 		r = 0;
 	}
 	return r;
 }
-
-studente classe[100]; //globale
 
 int controlloSesso(char s)
 {
@@ -35,7 +35,7 @@ int controlloSesso(char s)
 	}
 	else
 	{
-		system("cls");
+		system("clear");//system("cls");
 		cout <<"Carattero errato, riprova." <<endl;
 		r = 0;
 	}
@@ -51,7 +51,7 @@ int controlloVoto(int s)
 	}
 	else
 	{
-		system("cls");
+		system("clear");//system("cls");
 		cout <<"Voto errato, riprova." <<endl;
 		r = 0;
 	}
@@ -64,6 +64,7 @@ void caricaClasse(int nStudenti)
 	{
 		cout <<"Nome dello studente " <<i+1 <<" : ";
 		fflush(stdin);
+		cin.ignore(1000,'\n');
 		getline(cin, classe[i].nome);
 		
 		do
@@ -128,7 +129,7 @@ void mediaPerSesso(int nStudenti)
 	{
 		media = somma/c;
 		cout <<"La media e' " <<media <<endl;
-		system("pause"); 
+		//system("pause"); cristo santo non tutti usana quella merda di windows
 	}
 	else
 	{
@@ -139,16 +140,59 @@ void mediaPerSesso(int nStudenti)
 int menu()
 {
 	int s;
-	system("cls");
+	system("clear"); //system("cls"); cristo santo non tutti usana quella merda di windows
 	cout <<"        Menu         " <<endl;
 	cout <<"      0 - EXIT       " <<endl;
 	cout <<"     1 - Stampa      " <<endl;
 	cout <<" 2 - Media per sesso " <<endl;
+	cout <<" 3 - Voto più alto   " <<endl; 
+	cout <<" 4 - Voto più alto F " <<endl;
+	cout <<" 5 - Elenco insufficenti"<<endl; 
+	cout <<" 6 - Controllo insufficenti" <<endl;  
 	do
 	{
 		cin >>s;
-	}while(controlloMenu(s, 3) == 0);
+	}while(controlloMenu(s, 7) == 0);
 	return s;
+}
+
+studente checkMajor(int nStudenti){
+	int voto = classe[0].voto; 
+	int J = 0 ; 
+	for (int i=0; i<nStudenti; i++){
+		if (classe[i].voto > voto){
+			voto = classe[i].voto;
+			J = i; 
+		}
+	}
+	return classe[J]; 
+}
+
+studente checkMajorF(int nStudenti){
+	int voto = classe[0].voto; 
+	int J = 0 ; 
+	for (int i=0; i<nStudenti; i++){
+		if (classe[i].voto > voto && classe[i].sesso == 'F'){
+			voto = classe[i].voto;
+			J = i; 
+		}
+	}
+	return classe[J]; 
+}
+
+void insufficenti(int nStudenti){
+	for (int i; i<nStudenti; i++){
+		if (classe[i].voto < 6){
+			cout << classe[i].nome << "\t:\t" << classe[i].voto << endl; 
+		}
+	} 
+}
+bool checkMarker(int nStudenti){
+	for (int i; i<nStudenti; i++){
+		if (classe[i].voto < 6){
+			return true; 
+		}
+	} return false; 
 }
 
 int main()
@@ -157,7 +201,7 @@ int main()
 	do
 	{
 		cout <<"Inserisci il numero di studenti: ";
-		cin >> nStudenti;
+		cin >> nStudenti; 
 	} while(controlloN(nStudenti) == 0);
 	
 	classe[nStudenti];
@@ -166,14 +210,38 @@ int main()
 	
 	switch (menu())
 	{
-		case 0:
+		case 0:{
 			cout <<"Exit";
-			break;
-		case 1:
+			break; }
+		case 1: {
 			StampaClasse(nStudenti);
 			break;
-		case 2:
-			mediaPerSesso(nStudenti);
+			case 2:
+				mediaPerSesso(nStudenti);
+			break; }
+		case 3:{
+			system("clear");
+			studente migliore = checkMajor(nStudenti);
+			cout << "lo studente con il voto più alto e': " << migliore.nome << "con un voto di: " << migliore.voto << endl;
+			break;}
+		case 4:{
+			system("clear");
+			studente miglioreF = checkMajorF(nStudenti); 
+			cout << "la studentessa con il voto più alto e': " << miglioreF.nome << "con un voto di: " << miglioreF.voto << endl;
+			break;}
+		case 5:{
+			system("clear");
+			insufficenti(nStudenti);
 			break;
+			}
+		case 6: {
+			system("clear");
+			if (checkMarker(nStudenti)){
+				cout << "ci sono alunni insufficenti" << endl; 
+			}
+			break;
+		}
+
+
 	} 
 }
